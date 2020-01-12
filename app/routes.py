@@ -27,9 +27,12 @@ def add_user():
             "first_name": first_name,
             "last_name": last_name,
         }
+        try:
+            db.insert(user)
+        except:
+            flash(f'Пользователь не создан. Произошла ошибка в базе данных.')
+            return redirect(url_for('index'))
 
-        db.insert(user)
-        
         flash(f'Добавлен пользователь: "{surname} {first_name} {last_name}"')
 
         return redirect(url_for('index'))

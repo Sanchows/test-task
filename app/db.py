@@ -9,5 +9,6 @@ def insert(user):
         users.insert_one(user)
     except Exception as e:
         print(f"DB error: {e}")
+        raise
     else:
         print(f"DB: {user} succesfully inserted.")
