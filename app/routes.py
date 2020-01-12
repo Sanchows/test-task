@@ -6,6 +6,8 @@ from flask import Flask, render_template, flash, redirect, url_for
 
 from app.forms import AddForm
 
+from app import db
+
 @app.route('/')
 def index():
     return render_template("index.html", title='Тестовое задание / Python Infrastructure ZiMAD')
@@ -19,6 +21,14 @@ def add_user():
         surname = form.surname.data
         first_name = form.first_name.data
         last_name = form.last_name.data
+
+        user = {
+            "surname": surname,
+            "first_name": first_name,
+            "last_name": last_name,
+        }
+
+        db.insert(user)
         
         flash(f'Добавлен пользователь: "{surname} {first_name} {last_name}"')
 
