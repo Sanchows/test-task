@@ -5,7 +5,7 @@
     <body>
         <div>
             <a href="{{ url_for('index') }}">Главная</a>
-            <a href="#">Добавление пользователя</a>
+            <a href="{{ url_for('add_user') }}">Добавление пользователя</a>
         </div>
         <hr>
         {% block content %}{% endblock %}
