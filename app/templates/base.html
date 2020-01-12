@@ -1,0 +1,13 @@
+<html>
+    <head>
+        <title>{{ title }} / Тестовое задание</title>
+    </head>
+    <body>
+        <div>
+            <a href="{{ url_for('index') }}">Главная</a>
+            <a href="#">Добавление пользователя</a>
+        </div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>
