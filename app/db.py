@@ -7,7 +7,7 @@ def insert(user):
     try:
         users = db.users
         users.insert_one(user)
-    except Exception as e:
+    except:
         raise
     else:
         print(f"DB: {user} succesfully inserted.")
