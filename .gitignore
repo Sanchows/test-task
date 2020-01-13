@@ -1,3 +1,5 @@
 __pycache__
 ll_env
-uploads/*
+*.png
+*.jpg
+*.jpeg
