@@ -42,12 +42,11 @@ def add_user():
         
         upload_errors = _upload_image(file)
         
-        if upload_errors["file_size_error"]:
-            flash(f'Ошибка. Размер файла превышает 10МБ !')
-            return render_template('add.html', title='Добавление пользователя', form=form)
-
-        if upload_errors["file_extension_error"]:
-            flash(f'Ошибка. Расширение файла не соответствует: .jpg, .jpeg, .png')
+        if True in upload_errors.values():
+            if upload_errors["file_size_error"]:
+                flash(f'Ошибка. Размер файла превышает 10МБ !')            
+            if upload_errors["file_extension_error"]:
+                flash(f'Ошибка. Расширение файла не соответствует: .jpg, .jpeg, .png')
             return render_template('add.html', title='Добавление пользователя', form=form)
 
         user = {
