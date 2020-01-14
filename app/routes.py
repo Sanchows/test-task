@@ -12,23 +12,29 @@ def index():
 
 def _upload_image(file):
     upload_errors = {}
+    saved_file = {}
 
     MAX_FILE_SIZE = 10 * 1024 * 1024 + 1
     VALID_FILES = ('jpg', 'jpeg', 'png')
 
-    filename = file.filename
-    file_extension = filename.split('.', -1)[-1].lower()
+    filename = file.filename.split('.', -1)[0]
+    file_extension = file.filename.split('.', -1)[-1].lower()
 
     file_bytes = file.read(MAX_FILE_SIZE)
     upload_errors["file_size_error"] = len(file_bytes) == MAX_FILE_SIZE
     upload_errors["file_extension_error"] = not file_extension in VALID_FILES 
     
     if not upload_errors['file_size_error'] and not upload_errors['file_extension_error']:
-        with open(f"{os.getcwd()}/app/uploads/{filename}", 'wb') as new_file:
+        with open(f"{os.getcwd()}/app/uploads/{filename}.{file_extension}", 'wb') as new_file:
             new_file.write(file_bytes)
         # file.save(f"{os.getcwd()}/app/uploads/{file.filename}")
+        saved_file = {
+            'filename': filename,
+            'file_extension': file_extension,
+            'file_bytes': file_bytes
+        }
 
-    return upload_errors
+    return upload_errors, saved_file
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_user():
@@ -40,7 +46,7 @@ def add_user():
         last_name = form.last_name.data
         file = form.file.data
         
-        upload_errors = _upload_image(file)
+        upload_errors, saved_file = _upload_image(file)
         
         if True in upload_errors.values():
             if upload_errors["file_size_error"]:
@@ -53,6 +59,7 @@ def add_user():
             "surname": surname,
             "first_name": first_name,
             "last_name": last_name,
+            "photo": saved_file
         }
         try:
             db.insert(user)
