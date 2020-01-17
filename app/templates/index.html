@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h3>{{ title }}</h3>
+    <center><h3>{{ title }}</h3></center>
     <hr>
-    <h4>Список пользователей:</h4>
+    <h4>Список пользователей</h4>
+    <hr>
+    <center>
+        Навигация по страницам:<br>
+        {% for page in pages %}
+            <a href="{{ url_for('index') }}?page={{ page }}">{{ page }}</a>
+        {% endfor %}
+    </center>
+    <br><br>
+    
     {% for user in users %}
     {{ page + loop.index }}
         <img src="{{ user.photo.path }}"><p>{{ user.surname }} {{ user.first_name }} {{ user.last_name }}</p>

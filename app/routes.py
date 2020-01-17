@@ -25,7 +25,7 @@ def index():
     else:
         page = 1 # по дефолту первая
 
-    pages = [i+1 for i in range((TOTAL_USERS-1)//TOTAL_ON_PAGE)] # список страниц
+    pages = [1] + [i+2 for i in range((TOTAL_USERS-1)//TOTAL_ON_PAGE)] # список страниц
     
     return render_template(
         "index.html",
