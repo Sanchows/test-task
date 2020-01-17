@@ -5,7 +5,6 @@ from app import app
 from flask import Flask, render_template, flash, redirect, url_for, request
 from app.forms import AddForm
 from app import db
-from flask_paginate import Pagination, get_page_parameter
 
 @app.route('/')
 def index():
@@ -15,6 +14,7 @@ def index():
     TOTAL_ON_PAGE = 5 # количество юзеров на одной странице
     request_page = request.args.get('page') # запрос на вывод номера страницы
     DEFAULT_PAGE = 1 # по дефолту первая страница
+
     if request_page:
         try:
             page = int(request_page)
@@ -23,7 +23,7 @@ def index():
     else:
         page = DEFAULT_PAGE
 
-    pages = [1] + [i+2 for i in range((TOTAL_USERS-1)//TOTAL_ON_PAGE)] # список страниц
+    pages = [1] + [i+2 for i in range((TOTAL_USERS-1)//TOTAL_ON_PAGE)] # список номеров страниц
     if not page in pages:
         page = DEFAULT_PAGE
 
