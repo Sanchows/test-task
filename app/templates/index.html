@@ -7,7 +7,7 @@
         <br>
 
     {% for user in users %}
-        <img src="#"><p>{{ user.surname }} {{ user.first_name }} {{ user.last_name }}</p>
+        <img src="{{ user.photo.path }}"><p>{{ user.surname }} {{ user.first_name }} {{ user.last_name }}</p>
         <hr>
     {% endfor %}
 {% endblock content %}
