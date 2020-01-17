@@ -27,9 +27,9 @@ def _upload_image(file):
     upload_errors["file_extension_error"] = not file_extension in VALID_FILES 
     
     if not upload_errors['file_size_error'] and not upload_errors['file_extension_error']:
-        with open(f"{os.getcwd()}/app/uploads/{filename}.{file_extension}", 'wb') as new_file:
+        with open(f"{os.getcwd()}/app/static/upload_images/{filename}.{file_extension}", 'wb') as new_file:
             new_file.write(file_bytes)
-        # file.save(f"{os.getcwd()}/app/uploads/{file.filename}")
+        # file.save(f"{os.getcwd()}/app/static/upload_images/{file.filename}")
         saved_file = {
             'filename': filename,
             'file_extension': file_extension,
@@ -43,6 +43,7 @@ def add_user():
     form = AddForm()
     
     if form.validate_on_submit():
+        
         surname = form.surname.data
         first_name = form.first_name.data
         last_name = form.last_name.data
