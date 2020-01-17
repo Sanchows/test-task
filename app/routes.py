@@ -8,7 +8,9 @@ from app import db
 
 @app.route('/')
 def index():
-    return render_template("index.html", title='Тестовое задание / Python Infrastructure ZiMAD')
+    users = db.find()
+    
+    return render_template("index.html", users=users, title='Тестовое задание / Python Infrastructure ZiMAD')
 
 def _upload_image(file):
     upload_errors = {}

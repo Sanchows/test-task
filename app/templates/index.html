@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h3>Привет!</h3>
+    <h3>{{ title }}</h3>
+    <hr>
+    <h4>Список пользователей:</h4>
+        <br>
+
+    {% for user in users %}
+        <img src="#"><p>{{ user.surname }} {{ user.first_name }} {{ user.last_name }}</p>
+        <hr>
+    {% endfor %}
 {% endblock content %}
