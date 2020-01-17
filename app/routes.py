@@ -14,19 +14,19 @@ def index():
     TOTAL_USERS = len(users) # всего пользователей в бд
     TOTAL_ON_PAGE = 5 # количество юзеров на одной странице
     request_page = request.args.get('page') # запрос на вывод номера страницы
-    
+    DEFAULT_PAGE = 1 # по дефолту первая страница
     if request_page:
         try:
             page = int(request_page)
         except:
-            pass
-        else:
-            pass
+            page = DEFAULT_PAGE
     else:
-        page = 1 # по дефолту первая
+        page = DEFAULT_PAGE
 
     pages = [1] + [i+2 for i in range((TOTAL_USERS-1)//TOTAL_ON_PAGE)] # список страниц
-    
+    if not page in pages:
+        page = DEFAULT_PAGE
+
     return render_template(
         "index.html",
         page=TOTAL_ON_PAGE*(page-1),
