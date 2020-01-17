@@ -7,8 +7,9 @@
     <hr>
     <center>
         Навигация по страницам:<br>
-        <a href="{{ url_for('index') }}?page={{ current_page - 1 }}">Пред. </a> 
-        
+        {% if current_page > 1 %}
+            <a href="{{ url_for('index') }}?page={{ current_page - 1 }}">Пред. </a> 
+        {% endif %}
         {% for page in pages %}
             {% if current_page == page %}
                 {{ page }}
@@ -17,9 +18,9 @@
             {% endif %}
             
         {% endfor %}
-
-        <a href="{{ url_for('index') }}?page={{ current_page + 1 }}">След. </a> 
-
+        {% if current_page < pages|length %}
+            <a href="{{ url_for('index') }}?page={{ current_page + 1 }}">След. </a> 
+        {% endif %}
     </center>
     <br><br>
     
