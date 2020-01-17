@@ -21,3 +21,12 @@ def find():
         raise
     else:
         return list(a)
+
+def update_path_to_image(user_id, path):
+    try:
+        print(dir(db.users))
+        db.users.update_one({"_id": user_id}, {"set": {"photo.path": path}})
+    except:
+        raise
+    else:
+        pass

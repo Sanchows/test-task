@@ -31,14 +31,19 @@ def validation_image(file):
         file_data = {
             'filename': filename,
             'file_extension': file_extension,
-            'file_bytes': file_bytes
+            'path': '',
+            'file_bytes': file_bytes,
         }
 
     return errors, file_data
 
 def save_file(user_id, file):
-    with open(f"{os.getcwd()}/app/static/upload_images/{user_id}.{file['file_extension']}", 'wb') as new_file:
+    path = f"{os.getcwd()}/app/static/upload_images/{user_id}.{file['file_extension']}"
+    
+    with open(path, 'wb') as new_file:
         new_file.write(file['file_bytes'])
+    
+    db.update_path_to_image(user_id, path)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_user():
