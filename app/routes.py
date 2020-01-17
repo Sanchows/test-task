@@ -29,8 +29,9 @@ def index():
 
     return render_template(
         "index.html",
-        page=TOTAL_ON_PAGE*(page-1),
+        current_page=page,
         pages=pages,
+        TOTAL_ON_PAGE=TOTAL_ON_PAGE,
         users=users[(page-1)*TOTAL_ON_PAGE:((page-1)*TOTAL_ON_PAGE)+TOTAL_ON_PAGE], # срез юзеров, в зависимости от страницы
         title='Тестовое задание / Python Infrastructure ZiMAD'
     )

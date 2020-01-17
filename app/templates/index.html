@@ -7,14 +7,24 @@
     <hr>
     <center>
         Навигация по страницам:<br>
+        <a href="{{ url_for('index') }}?page={{ current_page - 1 }}">Пред. </a> 
+        
         {% for page in pages %}
-            <a href="{{ url_for('index') }}?page={{ page }}">{{ page }}</a>
+            {% if current_page == page %}
+                {{ page }}
+            {% else %}
+                <a href="{{ url_for('index') }}?page={{ page }}"> {{ page }}</a>
+            {% endif %}
+            
         {% endfor %}
+
+        <a href="{{ url_for('index') }}?page={{ current_page + 1 }}">След. </a> 
+
     </center>
     <br><br>
     
     {% for user in users %}
-    {{ page + loop.index }}
+    {{ (current_page-1)*TOTAL_ON_PAGE + loop.index }}
         <img src="{{ user.photo.path }}"><p>{{ user.surname }} {{ user.first_name }} {{ user.last_name }}</p>
         <hr>
     {% endfor %}
