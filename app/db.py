@@ -11,6 +11,7 @@ def insert(user):
         raise
     else:
         print(f"DB: {user} succesfully inserted.")
+        return user['_id']
 
 def find():
     try:

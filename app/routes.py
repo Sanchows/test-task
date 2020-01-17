@@ -12,9 +12,9 @@ def index():
     
     return render_template("index.html", users=users, title='Тестовое задание / Python Infrastructure ZiMAD')
 
-def _upload_image(file):
-    upload_errors = {}
-    saved_file = {}
+def validation_image(file):
+    errors = {}
+    file_data = {}
 
     MAX_FILE_SIZE = 10 * 1024 * 1024 + 1
     VALID_FILES = ('jpg', 'jpeg', 'png')
@@ -23,20 +23,22 @@ def _upload_image(file):
     file_extension = file.filename.split('.', -1)[-1].lower()
 
     file_bytes = file.read(MAX_FILE_SIZE)
-    upload_errors["file_size_error"] = len(file_bytes) == MAX_FILE_SIZE
-    upload_errors["file_extension_error"] = not file_extension in VALID_FILES 
+    errors["file_size_error"] = len(file_bytes) == MAX_FILE_SIZE
+    errors["file_extension_error"] = not file_extension in VALID_FILES 
     
-    if not upload_errors['file_size_error'] and not upload_errors['file_extension_error']:
-        with open(f"{os.getcwd()}/app/static/upload_images/{filename}.{file_extension}", 'wb') as new_file:
-            new_file.write(file_bytes)
+    if not errors['file_size_error'] and not errors['file_extension_error']:
         # file.save(f"{os.getcwd()}/app/static/upload_images/{file.filename}")
-        saved_file = {
+        file_data = {
             'filename': filename,
             'file_extension': file_extension,
             'file_bytes': file_bytes
         }
 
-    return upload_errors, saved_file
+    return errors, file_data
+
+def save_file(user_id, file):
+    with open(f"{os.getcwd()}/app/static/upload_images/{user_id}.{file['file_extension']}", 'wb') as new_file:
+        new_file.write(file['file_bytes'])
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_user():
@@ -49,12 +51,12 @@ def add_user():
         last_name = form.last_name.data
         file = form.file.data
         
-        upload_errors, saved_file = _upload_image(file)
+        file_errors, file_data = validation_image(file)
         
-        if True in upload_errors.values():
-            if upload_errors["file_size_error"]:
+        if True in file_errors.values():
+            if file_errors["file_size_error"]:
                 flash(f'Ошибка. Размер файла превышает 10МБ !')            
-            if upload_errors["file_extension_error"]:
+            if file_errors["file_extension_error"]:
                 flash(f'Ошибка. Расширение файла не соответствует: .jpg, .jpeg, .png')
             return render_template('add.html', title='Добавление пользователя', form=form)
 
@@ -62,13 +64,16 @@ def add_user():
             "surname": surname,
             "first_name": first_name,
             "last_name": last_name,
-            "photo": saved_file
+            "photo": file_data
         }
+        
         try:
-            db.insert(user)
+            user_id = db.insert(user)
         except:
             flash(f'Пользователь не создан. Произошла ошибка в базе данных.')
             return render_template('add.html', title='Добавление пользователя', form=form)
+        
+        save_file(user_id, user['photo'])
 
         flash(f'Добавлен пользователь: "{surname} {first_name} {last_name}"')
         return redirect(url_for('index'))
