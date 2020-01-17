@@ -2,15 +2,38 @@
 
 import os
 from app import app
-from flask import Flask, render_template, flash, redirect, url_for
+from flask import Flask, render_template, flash, redirect, url_for, request
 from app.forms import AddForm
 from app import db
+from flask_paginate import Pagination, get_page_parameter
 
 @app.route('/')
 def index():
     users = db.find()
+
+    TOTAL_USERS = len(users) # всего пользователей в бд
+    TOTAL_ON_PAGE = 5 # количество юзеров на одной странице
+    request_page = request.args.get('page') # запрос на вывод номера страницы
     
-    return render_template("index.html", users=users, title='Тестовое задание / Python Infrastructure ZiMAD')
+    if request_page:
+        try:
+            page = int(request_page)
+        except:
+            pass
+        else:
+            pass
+    else:
+        page = 1 # по дефолту первая
+
+    pages = [i+1 for i in range((TOTAL_USERS-1)//TOTAL_ON_PAGE)] # список страниц
+    
+    return render_template(
+        "index.html",
+        page=TOTAL_ON_PAGE*(page-1),
+        pages=pages,
+        users=users[(page-1)*TOTAL_ON_PAGE:((page-1)*TOTAL_ON_PAGE)+TOTAL_ON_PAGE], # срез юзеров, в зависимости от страницы
+        title='Тестовое задание / Python Infrastructure ZiMAD'
+    )
 
 def validation_image(file):
     errors = {}
