@@ -13,18 +13,6 @@ from celery import Celery
 
 celery = Celery(broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
 
-@celery.task(name='test')
-def test_func(text):
-    a = text + text
-    return 'Hello'
-
-@app.route('/test')
-def task_processing():
-    task = test_func.delay('privet')
-    async_result = celery.AsyncResult(id=task.task_id, app=celery)
-    processing_result = task.get()
-    return redirect(url_for('index'))
-
 @app.route('/')
 def index():
     users = db.find()
@@ -84,6 +72,8 @@ def validation_image(file):
 
     return errors, file_data
 
+
+@celery.task(name='image.Downscale')
 def save_resized_image(filename):
     image = cv2.imread(f"{os.getcwd()}/app/static/upload_images/{filename}", cv2.IMREAD_UNCHANGED)
     width = image.shape[1] # ширина 529
@@ -109,7 +99,14 @@ def save_resized_image(filename):
     dim = (width, height)
     resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
     
-    cv2.imwrite(f"{os.getcwd()}/app/static/resized_images/{filename}", resized)
+    abs_path_to_resized = f"{os.getcwd()}/app/static/resized_images/{filename}"
+    
+    cv2.imwrite(abs_path_to_resized, resized)
+
+    path_to_resized = f"static/resized_images/{filename}"
+
+    return path_to_resized
+
 
 def save_file(user_id, file):
     path_to_file = f"{os.getcwd()}/app/static/upload_images/{user_id}.{file['file_extension']}"
@@ -117,10 +114,13 @@ def save_file(user_id, file):
     with open(path_to_file, 'wb') as new_file:
         new_file.write(file['file_bytes'])
 
-    save_resized_image(f"{user_id}.{file['file_extension']}")
+    task = save_resized_image.delay(f"{user_id}.{file['file_extension']}")
+    async_result = celery.AsyncResult(id=task.task_id, app=celery)
+    path_to_resized_image = async_result.get()
+
     db.update_path_to_image(user_id, 
         f"static/upload_images/{user_id}.{file['file_extension']}",
-        f"static/resized_images/{user_id}.{file['file_extension']}"
+        path_to_resized_image,
     )
 
 @app.route('/add', methods=['GET', 'POST'])
