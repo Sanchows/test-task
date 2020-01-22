@@ -6,6 +6,24 @@ from flask import Flask, render_template, flash, redirect, url_for, request
 from app.forms import AddForm
 from app import db
 
+from celery.result import AsyncResult
+from celery import Celery
+
+celery = Celery(broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
+
+@celery.task(name='celery.test_func')
+def test_func(text):
+    a = text + text
+    return 'Hello'
+
+@app.route('/test')
+def task_processing():
+    task = test_func.delay('privet')
+    async_result = celery.AsyncResult(id=task.task_id, app=celery)
+    processing_result = task.get()
+    print(processing_result)
+    return redirect(url_for('index'))
+
 @app.route('/')
 def index():
     users = db.find()
