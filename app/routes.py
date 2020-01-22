@@ -36,19 +36,22 @@ def index():
         title='Тестовое задание / Python Infrastructure ZiMAD'
     )
 
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = ('jpg', 'jpeg', 'png')
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 def validation_image(file):
     errors = {}
     file_data = {}
 
     MAX_FILE_SIZE = 10 * 1024 * 1024 + 1
-    VALID_FILES = ('jpg', 'jpeg', 'png')
 
     filename = file.filename.split('.', -1)[0]
     file_extension = file.filename.split('.', -1)[-1].lower()
 
     file_bytes = file.read(MAX_FILE_SIZE)
     errors["file_size_error"] = len(file_bytes) == MAX_FILE_SIZE
-    errors["file_extension_error"] = not file_extension in VALID_FILES 
+    errors["file_extension_error"] = not allowed_file(file.filename) 
     
     if not errors['file_size_error'] and not errors['file_extension_error']:
         # file.save(f"{os.getcwd()}/app/static/upload_images/{file.filename}")
