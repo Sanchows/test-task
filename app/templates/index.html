@@ -23,10 +23,29 @@
         {% endif %}
     </center>
     <br><br>
-    
+    <center>
+    <table>
+
+    <thead>
+        <td bgcolor="#9dc6f2" style='font-size: 19px'>Номер</td>
+        <td bgcolor="#9dc6f2" style='font-size: 19px'>Фото</td>
+        <td bgcolor="#9dc6f2" style='font-size: 19px'>Фамилия</td>
+        <td bgcolor="#9dc6f2" style='font-size: 19px'>Имя</td>
+        <td bgcolor="#9dc6f2" style='font-size: 19px'>Отчество</td>
+    </thead>
+    <tbody>
     {% for user in users %}
-    {{ (current_page-1)*TOTAL_ON_PAGE + loop.index }}
-        <img src="{{ user.photo.path_resized }}"><p>{{ user.surname }} {{ user.first_name }} {{ user.last_name }}</p>
-        <hr>
+    <tr>
+        <td>{{ (current_page-1)*TOTAL_ON_PAGE + loop.index }}</td>
+        <td><img src="{{ user.photo.path_resized }}"></td>
+        <td>{{ user.surname }}</td>
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+    </tr>
+    <tr bordercolor="#000000">
+    </tr>
     {% endfor %}
+    </tbody>
+    </table>
+    </center>
 {% endblock content %}

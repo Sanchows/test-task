@@ -40,7 +40,7 @@ def index():
         pages=pages,
         TOTAL_ON_PAGE=TOTAL_ON_PAGE,
         users=users[(page-1)*TOTAL_ON_PAGE:((page-1)*TOTAL_ON_PAGE)+TOTAL_ON_PAGE], # срез юзеров, в зависимости от страницы
-        title='Тестовое задание / Python Infrastructure ZiMAD'
+        title='Тестовое задание'
     )
 
 def allowed_file(filename):
