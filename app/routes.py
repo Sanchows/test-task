@@ -104,7 +104,7 @@ def save_resized_image(filename):
         excess_percent = excess * 100 / height
         height = ALLOW_HEIGHT
 
-        width = width - int(width * procent / 100)
+        width = width - int(width * excess_percent / 100)
 
     dim = (width, height)
     resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
