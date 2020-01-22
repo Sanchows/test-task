@@ -6,12 +6,14 @@ from flask import Flask, render_template, flash, redirect, url_for, request
 from app.forms import AddForm
 from app import db
 
+import cv2
+
 from celery.result import AsyncResult
 from celery import Celery
 
 celery = Celery(broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
 
-@celery.task(name='celery.test_func')
+@celery.task(name='test')
 def test_func(text):
     a = text + text
     return 'Hello'
@@ -21,7 +23,6 @@ def task_processing():
     task = test_func.delay('privet')
     async_result = celery.AsyncResult(id=task.task_id, app=celery)
     processing_result = task.get()
-    print(processing_result)
     return redirect(url_for('index'))
 
 @app.route('/')
@@ -77,16 +78,50 @@ def validation_image(file):
             'filename': filename,
             'file_extension': file_extension,
             'path': '',
+            'path_resized': '',
             'file_bytes': file_bytes,
         }
 
     return errors, file_data
 
-def save_file(user_id, file):
-    with open(f"{os.getcwd()}/app/static/upload_images/{user_id}.{file['file_extension']}", 'wb') as new_file:
-        new_file.write(file['file_bytes'])
+def save_resized_image(filename):
+    image = cv2.imread(f"{os.getcwd()}/app/static/upload_images/{filename}", cv2.IMREAD_UNCHANGED)
+    width = image.shape[1] # ширина 529
+    height = image.shape[0] # высота 303
+
+    ALLOW_WIDTH = 200
+    ALLOW_HEIGHT = 200
+
+    if width > ALLOW_WIDTH:
+        excess = width - ALLOW_WIDTH
+        excess_percent = excess * 100 / width
+        width = ALLOW_WIDTH
+
+        height = height - int(height * excess_percent/100)
     
-    db.update_path_to_image(user_id, f"static/upload_images/{user_id}.{file['file_extension']}")
+    if height > ALLOW_HEIGHT:
+        excess = height - ALLOW_HEIGHT
+        excess_percent = excess * 100 / height
+        height = ALLOW_HEIGHT
+
+        width = width - int(width * procent / 100)
+
+    dim = (width, height)
+    resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+    
+    cv2.imwrite(f"{os.getcwd()}/app/static/resized_images/{filename}", resized)
+
+def save_file(user_id, file):
+    path_to_file = f"{os.getcwd()}/app/static/upload_images/{user_id}.{file['file_extension']}"
+    
+    with open(path_to_file, 'wb') as new_file:
+        new_file.write(file['file_bytes'])
+
+    save_resized_image(f"{user_id}.{file['file_extension']}")
+    db.update_path_to_image(user_id, 
+        f"static/upload_images/{user_id}.{file['file_extension']}",
+        f"static/resized_images/{user_id}.{file['file_extension']}"
+    )
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_user():

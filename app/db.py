@@ -21,9 +21,10 @@ def find():
     else:
         return list(a)
 
-def update_path_to_image(user_id, path):
+def update_path_to_image(user_id, path, path_resized):
     try:
         db.users.update_one({"_id": user_id}, {"$set": {"photo.path": path}})
+        db.users.update_one({"_id": user_id}, {"$set": {"photo.path_resized": path_resized}})
     except:
         raise
     else:
