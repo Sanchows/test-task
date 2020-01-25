@@ -5,7 +5,7 @@ from flask import jsonify
 
 api = Api(app)
 
-class FindUser(Resource):
+class FindUsers(Resource):
     def get(self):
         try:
             users = db.find()
@@ -21,4 +21,20 @@ class FindUser(Resource):
         return response
 
 
-api.add_resource(FindUser, '/api/users')
+class FindUser(Resource):
+    def get(self, user_id):
+        try:
+            user = db.find_by_id(user_id)
+        except Exception as e:
+            return {'Not found': f'{e}'}, 404
+    
+        
+        user['_id'] = str(user['_id'])
+        
+        response = jsonify(user)
+        response.status_code = 200
+
+        return response
+
+api.add_resource(FindUsers, '/api/users/')
+api.add_resource(FindUser, '/api/user/<string:user_id>')
