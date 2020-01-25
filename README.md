@@ -25,3 +25,7 @@
 12. Run a web-app: `$ flask run`
 
 The application will be available on http://127.0.0.1:5000/
+
+## REST API
+Выборка всех пользователей: `http://127.0.0.1:5000/users`
+Выборка одного пользователя по его id: `http://127.0.0.1:5000/user/id`
