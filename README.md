@@ -28,4 +28,5 @@ The application will be available on http://127.0.0.1:5000/
 
 ## REST API
 Выборка всех пользователей: `http://127.0.0.1:5000/api/users`
+<br>
 Выборка одного пользователя по его id: `http://127.0.0.1:5000/api/user/id`
