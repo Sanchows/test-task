@@ -151,7 +151,18 @@ def add_user():
         }
         
         try:
-            user_id = db.insert(user)
+            user_id = db.insert({
+                    "surname": surname,
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "photo": {
+                        'filename': file_data['filename'],
+                        'file_extension': file_data['file_extension'],
+                        'path': file_data['path'],
+                        'path_resized': file_data['path_resized'],
+                    }
+                } 
+            )
         except:
             flash(f'Пользователь не создан. Произошла ошибка в базе данных.')
             return render_template('add.html', title='Добавление пользователя', form=form)
