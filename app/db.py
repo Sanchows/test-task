@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 client = MongoClient(host='localhost', port=27017)
 db = client['test_task']
@@ -15,11 +16,22 @@ def insert(user):
 def find():
     try:
         users = db.users
-        a = users.find()
+        result = users.find()
+
     except Exception as e:
         raise
     else:
-        return list(a)
+        return list(result)
+
+def find_by_id(user_id):
+    try:
+        users = db.users
+        user = users.find_one({"_id": ObjectId(user_id)})
+    except Exception as e:
+        raise
+    else:
+        return user
+
 
 def update_path_to_image(user_id, path, path_resized):
     try:
