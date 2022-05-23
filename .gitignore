@@ -3,5 +3,3 @@ env
 *.png
 *.jpg
 *.jpeg
-app/static/resized_images/*
-app/static/upload_images/*
