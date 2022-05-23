@@ -3,49 +3,55 @@
 {% block content %}
     <center><h3>{{ title }}</h3></center>
     <hr>
-    <h4>Список пользователей</h4>
-    <hr>
-    <center>
-        Навигация по страницам:<br>
-        {% if current_page > 1 %}
-            <a href="{{ url_for('index') }}?page={{ current_page - 1 }}">Пред. </a> 
-        {% endif %}
-        {% for page in pages %}
-            {% if current_page == page %}
-                {{ page }}
-            {% else %}
-                <a href="{{ url_for('index') }}?page={{ page }}"> {{ page }}</a>
+    {% if users %}
+        <h4>Список пользователей</h4>
+        <hr>
+        <center>
+            Навигация по страницам:<br>
+            {% if current_page > 1 %}
+                <a href="{{ url_for('index') }}?page={{ current_page - 1 }}">Пред. </a> 
             {% endif %}
-            
+            {% for page in pages %}
+                {% if current_page == page %}
+                    {{ page }}
+                {% else %}
+                    <a href="{{ url_for('index') }}?page={{ page }}"> {{ page }}</a>
+                {% endif %}
+                
+            {% endfor %}
+            {% if current_page < pages|length %}
+                <a href="{{ url_for('index') }}?page={{ current_page + 1 }}">След. </a> 
+            {% endif %}
+        </center>
+        <br><br>
+        <center>
+        <table>
+        <thead>
+            <td bgcolor="#9dc6f2" style='font-size: 19px'>Номер</td>
+            <td bgcolor="#9dc6f2" style='font-size: 19px'>Фото</td>
+            <td bgcolor="#9dc6f2" style='font-size: 19px'>Фамилия</td>
+            <td bgcolor="#9dc6f2" style='font-size: 19px'>Имя</td>
+            <td bgcolor="#9dc6f2" style='font-size: 19px'>Отчество</td>
+        </thead>
+        <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ (current_page-1)*TOTAL_ON_PAGE + loop.index }}</td>
+            <td><img src="{{ user.photo.path_resized }}">
+                <br>
+                <a href="{{ user.photo.path}}">Смотреть оригинал</a>
+            </td>
+            <td>{{ user.surname }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>{{ user.last_name }}</td>
+        </tr>
+        <tr bordercolor="#000000">
+        </tr>
         {% endfor %}
-        {% if current_page < pages|length %}
-            <a href="{{ url_for('index') }}?page={{ current_page + 1 }}">След. </a> 
-        {% endif %}
-    </center>
-    <br><br>
-    <center>
-    <table>
+        </tbody>
+        </table>
+        </center>
+    {% else %}
+        <h4>Пользователей нет. <a href="{{ url_for('add_user') }}">Добавление пользователя</a></h4>
 
-    <thead>
-        <td bgcolor="#9dc6f2" style='font-size: 19px'>Номер</td>
-        <td bgcolor="#9dc6f2" style='font-size: 19px'>Фото</td>
-        <td bgcolor="#9dc6f2" style='font-size: 19px'>Фамилия</td>
-        <td bgcolor="#9dc6f2" style='font-size: 19px'>Имя</td>
-        <td bgcolor="#9dc6f2" style='font-size: 19px'>Отчество</td>
-    </thead>
-    <tbody>
-    {% for user in users %}
-    <tr>
-        <td>{{ (current_page-1)*TOTAL_ON_PAGE + loop.index }}</td>
-        <td><img src="{{ user.photo.path_resized }}"></td>
-        <td>{{ user.surname }}</td>
-        <td>{{ user.first_name }}</td>
-        <td>{{ user.last_name }}</td>
-    </tr>
-    <tr bordercolor="#000000">
-    </tr>
-    {% endfor %}
-    </tbody>
-    </table>
-    </center>
 {% endblock content %}

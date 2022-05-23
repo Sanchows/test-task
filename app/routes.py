@@ -10,14 +10,13 @@ from app import db
 
 import cv2
 
-from celery.result import AsyncResult
 from celery import Celery
 
-celery = Celery(broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
+celery = Celery(broker='redis://redis:6379', backend='redis://redis:6379')
 
 @app.route('/')
 def index():
-    users = db.find()
+    users = api.FindUsers.get()
 
     TOTAL_USERS = len(users) # всего пользователей в бд
     TOTAL_ON_PAGE = 5 # количество юзеров на одной странице
@@ -35,6 +34,7 @@ def index():
     pages = [1] + [i+2 for i in range((TOTAL_USERS-1)//TOTAL_ON_PAGE)] # список номеров страниц
     if not page in pages:
         page = DEFAULT_PAGE
+    print('asdfasdsaaaaaaaaaaaaaaaaa')
 
     return render_template(
         "index.html",
@@ -105,10 +105,6 @@ def save_resized_image(filename):
     
     cv2.imwrite(abs_path_to_resized, resized)
 
-    path_to_resized = f"static/resized_images/{filename}"
-
-    return path_to_resized
-
 
 def save_file(user_id, file):
     path_to_file = f"{os.getcwd()}/app/static/upload_images/{user_id}.{file['file_extension']}"
@@ -116,9 +112,9 @@ def save_file(user_id, file):
     with open(path_to_file, 'wb') as new_file:
         new_file.write(file['file_bytes'])
 
+    filename_resized = f"{user_id}.{file['file_extension']}"
     task = save_resized_image.delay(f"{user_id}.{file['file_extension']}")
-    async_result = celery.AsyncResult(id=task.task_id, app=celery)
-    path_to_resized_image = async_result.get()
+    path_to_resized_image = f"static/resized_images/{filename_resized}"
 
     db.update_path_to_image(user_id, 
         f"static/upload_images/{user_id}.{file['file_extension']}",

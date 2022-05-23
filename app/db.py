@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
-client = MongoClient(host='localhost', port=27017)
+client = MongoClient(host='mongo', port=27017)
 db = client['test_task']
 
 def insert(user):
