@@ -1,5 +1,4 @@
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 
 client = MongoClient(host='mongo', port=27017)
 db = client['test_task']

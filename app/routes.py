@@ -16,7 +16,7 @@ celery = Celery(broker='redis://redis:6379', backend='redis://redis:6379')
 
 @app.route('/')
 def index():
-    users = api.FindUsers.get()
+    users = db.find()
 
     TOTAL_USERS = len(users) # всего пользователей в бд
     TOTAL_ON_PAGE = 5 # количество юзеров на одной странице
@@ -34,7 +34,6 @@ def index():
     pages = [1] + [i+2 for i in range((TOTAL_USERS-1)//TOTAL_ON_PAGE)] # список номеров страниц
     if not page in pages:
         page = DEFAULT_PAGE
-    print('asdfasdsaaaaaaaaaaaaaaaaa')
 
     return render_template(
         "index.html",

@@ -4,7 +4,7 @@
     <center><h3>{{ title }}</h3></center>
     <hr>
     {% if users %}
-    {{ page }}
+        {{ page }}
         <h4>Список пользователей</h4>
         <hr>
         <center>
@@ -54,5 +54,6 @@
         </center>
     {% else %}
         <h4>Пользователей нет. <a href="{{ url_for('add_user') }}">Добавление пользователя</a></h4>
+    {% endif %}
 
 {% endblock content %}
