@@ -1,5 +1,5 @@
 celery==4.4.0
-Flask==2.1.0
+Flask==2.3.2
 Flask-WTF
 flask_restful
 opencv-python
